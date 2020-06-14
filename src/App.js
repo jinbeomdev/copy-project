@@ -18,10 +18,17 @@ class RmList extends React.Component {
   }
 
   render() {
+    console.log(this.props.selectedRmListMenuItem);
+    let title;
+    if (this.props.selectedRmListMenuItem === null) {
+      title = "select reminders menu";
+    } else {
+      title = this.props.selectedRmListMenuItem.props.title;
+    }
     return (
       <div className="rm-list">
         <div className="rm-list-header">
-            {this.props.title}
+          {title}
         </div>
         <div className="rm-list-body">
           {this.state.rmListBodyItems}
@@ -194,7 +201,7 @@ class App extends React.Component {
               Add List
             </div>
           </div>
-            <RmList></RmList>
+            <RmList selectedRmListMenuItem={this.state.selectedRmListMenuItem}></RmList>
         </div>
       </div>
     );
