@@ -1,5 +1,27 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './App.css';
+
+function EditableText(props) {
+  const [isEditing, setisEditing] = useState(false);
+  const [value, setValue] = useState(props.text)
+
+ if (isEditing) {
+   return (
+     <div>
+       <input onBlur={() => setisEditing(false)} value={value} onChange={(e) => setValue(e.target.value)}>
+       </input>
+     </div>
+   );
+ } else {
+   return (
+     <div>
+       <span onClick={() => setisEditing(true)}>
+         {value}
+       </span>
+     </div>
+   );
+ }
+}
 
 class RmList extends React.Component {
   constructor(props) {
@@ -12,13 +34,14 @@ class RmList extends React.Component {
   }
 
   handleAddRmListBodyItem() {
-    this.setState({rmListBodyItems: this.state.rmListBodyItems.concat(
-      <RmListbodyItem></RmListbodyItem>
-    )});
+    this.setState({
+      rmListBodyItems: this.state.rmListBodyItems.concat(
+        <RmListbodyItem></RmListbodyItem>
+      )
+    });
   }
 
   render() {
-    console.log(this.props.selectedRmListMenuItem);
     let title;
     if (this.props.selectedRmListMenuItem === null) {
       title = "select reminders menu";
@@ -53,7 +76,7 @@ class RmListbodyItem extends React.Component {
   }
 
   handleClick() {
-    this.setState({isCompleted: !this.state.isCompleted});
+    this.setState({ isCompleted: !this.state.isCompleted });
   }
 
   isCompletedClass() {
@@ -61,7 +84,7 @@ class RmListbodyItem extends React.Component {
   }
 
   render() {
-    return(
+    return (
       <div className="rm-list-body-item">
         <div className={`rm-list-body-item-task-icon ${this.isCompletedClass()}`}
           onClick={() => this.handleClick()}>
@@ -71,7 +94,7 @@ class RmListbodyItem extends React.Component {
           <div className="rm-list-body-item-content-border"></div>
         </div>
       </div>
-    ); 
+    );
   }
 }
 
@@ -95,9 +118,9 @@ class RmListMenuItem extends React.Component {
   }
 
   handleClick() {
-    this.setState({isSelected: !this.state.isSelected});
+    this.setState({ isSelected: !this.state.isSelected });
   }
-  
+
   render() {
     return (
       <div className={`rm-list-menu-item ${this.isSelectedClass()}`}
@@ -105,8 +128,10 @@ class RmListMenuItem extends React.Component {
           this.handleClick();
           this.props.onSelectedRmListMenu(this);
         }
-      }>
-        <div className="rm-list-menu-item-content">{this.props.title}</div>
+        }>
+        <div className="rm-list-menu-item-content">
+          <EditableText text={this.props.title}></EditableText>
+        </div>
       </div>
     );
   }
@@ -131,56 +156,46 @@ class App extends React.Component {
       .then(
         (result) => {
           for (const rmListMenuItem of result) {
-            this.setState({rmListMenuItems: this.state.rmListMenuItems.concat(
-              this.getRmListMenuItemComponent(rmListMenuItem.rmListId, rmListMenuItem.rmListTitle)
-            )});
+            this.setState({
+              rmListMenuItems: this.state.rmListMenuItems.concat(
+                this.getRmListMenuItemComponent(rmListMenuItem.rmListId, rmListMenuItem.rmListTitle)
+              )
+            });
           }
-          
+
           if (this.state.rmListMenuItems.length) {
-            console.debug(this.state.rmListMenuItems);
           }
         },
         (error) => {
-          console.error(error);
         }
       );
   }
 
   getRmListMenuItemComponent(id, title) {
-    /**
-     * TODO : 새로운 리스트를 추가하는 프로세스에 대해서 고민 할 필요성이 있음.
-     * 현재 생각나는 프로세스는 다음과 같음.
-     * 1. 서버에 새로운 리스트 추가 요청
-     * 2. 서버에서 새로운 리스트에 대한 값을 응답.
-     * 3. 응답받은 값을 렌더링
-     * 위의 방법은 서버와 실시간 소통을 해야함으로 클라이언트가 느끼는 경험은 좋지 않을 수 있다.
-     * 두 번째 방법은 임의의 값으로 id를 설정 (UUID)을 한 후 진행
-     * 서버에서는 해당 id를 후처리를 통해 처리
-     */
     return (
       <RmListMenuItem key={id} id={id} title={title} onSelectedRmListMenu={this.handleSelectedRmListMenuItem}></RmListMenuItem>
     );
   }
 
   handleSelectedRmListMenuItem(rmListMenuItem) {
-    console.debug(this.state.selectedRmListMenuItem);
-
     if (this.state.selectedRmListMenuItem !== null) {
       this.state.selectedRmListMenuItem.handleClick();
     }
 
     if (this.state.selectedRmListMenuItem === rmListMenuItem) {
-      this.setState({selectedRmListMenuItem: null});
+      this.setState({ selectedRmListMenuItem: null });
       return;
     }
 
-    this.setState({selectedRmListMenuItem: rmListMenuItem});
+    this.setState({ selectedRmListMenuItem: rmListMenuItem });
   }
 
   handleAddList() {
-    this.setState({rmListMenuItems: this.state.rmListMenuItems.concat(
-      this.getRmListMenuItemComponent(undefined, "New List")
-    )});
+    this.setState({
+      rmListMenuItems: this.state.rmListMenuItems.concat(
+        this.getRmListMenuItemComponent(undefined, "New List")
+      )
+    });
   }
 
   render() {
@@ -201,7 +216,7 @@ class App extends React.Component {
               Add List
             </div>
           </div>
-            <RmList selectedRmListMenuItem={this.state.selectedRmListMenuItem}></RmList>
+          <RmList selectedRmListMenuItem={this.state.selectedRmListMenuItem}></RmList>
         </div>
       </div>
     );
