@@ -5,22 +5,34 @@ function EditableText(props) {
   const [isEditing, setisEditing] = useState(false);
   const [value, setValue] = useState(props.text)
 
- if (isEditing) {
-   return (
-     <div>
-       <input onBlur={() => setisEditing(false)} value={value} onChange={(e) => setValue(e.target.value)}>
-       </input>
-     </div>
-   );
- } else {
-   return (
-     <div>
-       <span onClick={() => setisEditing(true)}>
-         {value}
-       </span>
-     </div>
-   );
- }
+  const handleKeyDown = (event) => {
+    if (event.keyCode === 13) {
+      setisEditing(false);
+    }
+  }
+
+  if (isEditing) {
+    return (
+      <div>
+        <input
+          autoFocus
+          onBlur={() => setisEditing(false)}
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          onClick={(e) => e.stopPropagation()}
+          onKeyDown={(e) => handleKeyDown(e)}>
+        </input>
+      </div>
+    );
+  } else {
+    return (
+      <div>
+        <span onClick={(e) => { setisEditing(true); e.stopPropagation(); }}>
+          {value}
+        </span> 
+      </div>
+    );
+  }
 }
 
 class RmList extends React.Component {
