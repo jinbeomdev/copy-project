@@ -1,26 +1,48 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useState } from 'react';
 import Editable from './editable';
+import ReminderApi from './reminderApi';
 
 export default function Sidebar(props) {
 	const [rmMenus, setRmMenus] = useState([]);
 
+	useEffect(() => {
+		const reminderApi = new ReminderApi();
+		reminderApi.getAllReminderMenu('jinbeom') //for text, will implement login session
+			.then((response) => {
+				response.json()
+					.then((data) => {
+						setRmMenus(data);
+					});
+			})
+			.catch((err) => {
+
+			});
+	}, []);
+
 	const addRmMenu = () => {
-		setRmMenus(rmMenus.concat({
-			title: 'New Reminder',
-			reminders: []
-		}));
+		const reminderApi = new ReminderApi();
+		reminderApi.addReminderMenu('jinbeom', 'New Reminder')
+			.then((response) => {
+				response.json()
+					.then((data) => {
+						setRmMenus(rmMenus.concat(data));
+					})
+			})
+			.catch((err) => {
+			});;
 	}
 
-	const jsxRmMenus = rmMenus.map((rmMenu, index) =>
-		<RmMenu
-			key={index}
-			id={index}
-			title={rmMenu.title}
-			selectedRmMenu={props.selectedRmMenu}
-			setSelectedRmMenu={props.setSelectedRmMenu}>
-		</RmMenu>
-	);
+	const jsxRmMenus = rmMenus.map((rmMenu) => {
+		return (
+			<RmMenu
+				key={rmMenu.reminderMenuId}
+				id={rmMenu.reminderMenuId}
+				title={rmMenu.title}
+				selectedRmMenu={props.selectedRmMenu}
+				setSelectedRmMenu={props.setSelectedRmMenu}>
+			</RmMenu>);
+	});
 
 	return (
 		<div className="sidebar">
@@ -59,7 +81,7 @@ function RmMenu(props) {
 		<div className={`rm-list-menu-item ${id === props.selectedRmMenu ? 'is-selected' : ''}`}
 			onClick={() => handleOnClick()}>
 			<div className="rm-list-menu-item-content">
-			<Editable
+				<Editable
 					value={title}
 					setValue={setTitle}>
 				</Editable>

@@ -1,14 +1,38 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Editable from './editable';
+import ReminderApi from './reminderApi';
 
 export default function ReminderList(props) {
   const [reminders, setReminders] = useState([]);
 
+  useEffect(() => {
+    const reminderApi = new ReminderApi();
+    if (props.selectedRmMenu === null) {
+      return;
+    }
+    reminderApi.getAllReminder('jinbeom', props.selectedRmMenu)
+      .then((response) => {
+        response.json()
+          .then((data) => {
+            setReminders(data);
+          });
+      })
+      .catch((err) => {
+      });
+  }, [props.selectedRmMenu]);
+
   const AddReminder = () => {
-    setReminders(reminders.concat({
-      title: 'New Reminder',
-      isCompleted: false
-    }));
+    const reminderApi = new ReminderApi();
+    reminderApi.addReminder('jinbeom', props.selectedRmMenu, 'New Reminder')
+      .then((response) => {
+        response.json()
+          .then((data) => {
+            setReminders(reminders.concat(data));
+          });
+      })
+      .catch((err) => {
+      });
+    setReminders(reminders.concat());
   }
 
   const jsxReminders = reminders.map((reminder, index) =>

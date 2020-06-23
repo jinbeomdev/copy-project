@@ -11,7 +11,7 @@ export default function Editable(props) {
 
   const handleKeyDown = (e) => {
     if (e.keyCode === enterKeyCode) {
-      setIsEditing(false);
+      setIsEditing(false);  
     }
   }
 
