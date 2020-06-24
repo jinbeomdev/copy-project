@@ -59,7 +59,8 @@ html, body {
 }
 
 .rm-list-header {
-  height: 62px;
+  /* height: 62px; */
+  flex: 0 0 62px;
   padding-left: 24px;
   padding-top: 12px;
   display: flex;
@@ -71,11 +72,16 @@ html, body {
 .rm-list-body {
   display: flex;
   flex-direction: column;
-  flex: 1 0 auto;
+  flex: 1 1 auto;
+}
+
+.rm-list-body .scrollable-area {
+  overflow: auto;
 }
 
 .rm-list-footer {
-  height: 56px;
+  /*height: 56px;*/
+  flex: 0 0 56px;
   padding-left: 24px;
   padding-right: 24px;
   display: flex;
@@ -83,9 +89,10 @@ html, body {
   align-items: center;
 }
 
-.scrollable-area {
+.sidebar .scrollable-area {
   padding: 12px 12px 0; /*top, left-right, bottom*/
   flex: 1;
+  overflow: auto;
 }
 
 .rm-list-menu {

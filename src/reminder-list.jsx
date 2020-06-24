@@ -49,15 +49,17 @@ export default function ReminderList(props) {
         Text
           </div>
       <div className="rm-list-body">
-        <div className="rm-list-body-item">
-          <div className='rm-list-body-item-task-icon'>
+        <div className="scrollable-area">
+          <div className="rm-list-body-item">
+            <div className='rm-list-body-item-task-icon'>
+            </div>
+            <div className="rm-list-body-item-content">
+              <div className="rm-list-body-item-content-title">Text</div>
+              <div className="rm-list-body-item-content-border"></div>
+            </div>
           </div>
-          <div className="rm-list-body-item-content">
-            <div className="rm-list-body-item-content-title">Text</div>
-            <div className="rm-list-body-item-content-border"></div>
-          </div>
+          {jsxReminders}
         </div>
-        {jsxReminders}
       </div>
       <div className="rm-list-footer" onClick={() => AddReminder()}>
         Add Reminder
