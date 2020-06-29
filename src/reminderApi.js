@@ -44,7 +44,7 @@ export default class ReminderApi {
       method: 'POST'
     });
   }
-
+  
   //localhost:8080/reminder-api/user/jinbeom/menu/1/reminder/1?title=Modified Reminder
   modifyReminder(userName, reminderMenuId, reminderId, title) {
     return fetch(`${this.base}/user/${userName}/menu/${reminderMenuId}/reminder/${reminderId}?title=${title}`, {

@@ -11,8 +11,27 @@ export default function Editable(props) {
 
   const handleKeyDown = (e) => {
     if (e.keyCode === enterKeyCode) {
-      setIsEditing(false);  
+      setIsEditing(false);
+      handleOnSave();
     }
+  }
+
+  const handleOnSave = () => {
+    props.handleOnSave()
+    .then((response) => {
+      console.log(response);
+      response.json()
+        .then((data) => {
+          console.log(data);
+        })
+    })
+    .catch((err) => {
+    });
+  }
+
+  const handleOnBlur = () => {
+    setIsEditing(false);
+    handleOnSave();
   }
 
   if (isEditing) {
@@ -20,7 +39,7 @@ export default function Editable(props) {
       <div className="inline-editable">
         <input
           autoFocus
-          onBlur={() => setIsEditing(false)}
+          onBlur={() => handleOnBlur()}
           value={props.value}
           onChange={(e) => props.setValue(e.target.value)}
           onClick={(e) => handleOnClick(e)}
@@ -31,7 +50,9 @@ export default function Editable(props) {
   } else {
     return (
       <div className="inline-editable">
-        <span onClick={(e) => handleOnClick(e)}>{props.value}</span>
+        <span onClick={(e) => handleOnClick(e)}>
+          {props.value}
+        </span>
       </div>
     );
   }

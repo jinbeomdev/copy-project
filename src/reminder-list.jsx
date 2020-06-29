@@ -10,7 +10,7 @@ export default function ReminderList(props) {
     if (props.selectedRmMenu === null) {
       return;
     }
-    reminderApi.getAllReminder('jinbeom', props.selectedRmMenu)
+    reminderApi.getAllReminder('jinbeom', props.selectedRmMenu.id)
       .then((response) => {
         response.json()
           .then((data) => {
@@ -23,7 +23,7 @@ export default function ReminderList(props) {
 
   const AddReminder = () => {
     const reminderApi = new ReminderApi();
-    reminderApi.addReminder('jinbeom', props.selectedRmMenu, 'New Reminder')
+    reminderApi.addReminder('jinbeom', props.selectedRmMenu.id, 'New Reminder')
       .then((response) => {
         response.json()
           .then((data) => {
@@ -35,45 +35,60 @@ export default function ReminderList(props) {
     setReminders(reminders.concat());
   }
 
-  const jsxReminders = reminders.map((reminder, index) =>
+  const jsxReminders = reminders.map((reminder) =>
     <Reminder
-      key={index}
-      title={reminder.title}>
-      isCompleted={reminder.isCompleted}
+      key={reminder.reminderId}
+      reminderMenuId={props.selectedRmMenu.id}
+      reminderInfo={reminder}>
     </Reminder>
   );
 
-  return (
-    <div className="rm-list">
-      <div className="rm-list-header">
-        Text
-          </div>
-      <div className="rm-list-body">
-        <div className="scrollable-area">
-          <div className="rm-list-body-item">
-            <div className='rm-list-body-item-task-icon'>
+  if (props.selectedRmMenu !== null) {
+    return (
+      <div className="rm-list">
+        <div className="rm-list-header">
+          { props.selectedRmMenu.title }
+        </div>
+        <div className="rm-list-body">
+          <div className="scrollable-area">
+            <div className="rm-list-body-item">
+              <div className='rm-list-body-item-task-icon'>
+              </div>
+              <div className="rm-list-body-item-content">
+                <div className="rm-list-body-item-content-title">Text</div>
+                <div className="rm-list-body-item-content-border"></div>
+              </div>
             </div>
-            <div className="rm-list-body-item-content">
-              <div className="rm-list-body-item-content-title">Text</div>
-              <div className="rm-list-body-item-content-border"></div>
-            </div>
+            {jsxReminders}
           </div>
-          {jsxReminders}
+        </div>
+        <div className="rm-list-footer" onClick={() => AddReminder()}>
+          Add Reminder
         </div>
       </div>
-      <div className="rm-list-footer" onClick={() => AddReminder()}>
-        Add Reminder
+    );
+  }
+
+  return (
+    <div className="rm-list-body">
+      <div className="rm-list-empty">
+        Select reminder
       </div>
     </div>
-  );
+  )
 }
 
 function Reminder(props) {
-  const [title, setTitle] = useState(props.title);
-  const [isCompleted, setIsCompleted] = useState(props.isCompleted);
+  const [title, setTitle] = useState(props.reminderInfo.title);
+  const [isCompleted, setIsCompleted] = useState(props.reminderInfo.isCompleted);
 
   const handleOnClick = () => {
     setIsCompleted(!isCompleted);
+  }
+
+  const handleOnSave = () => {
+    const reminderApi = new ReminderApi();
+    return reminderApi.modifyReminder('jinbeom', props.reminderMenuId, props.reminderInfo.reminderId, title);
   }
 
   return (
@@ -86,7 +101,8 @@ function Reminder(props) {
         <div className="rm-list-body-item-content-title">
           <Editable
             value={title}
-            setValue={setTitle}>
+            setValue={setTitle}
+            handleOnSave={handleOnSave}>
           </Editable>
         </div>
         <div className="rm-list-body-item-content-border"></div>

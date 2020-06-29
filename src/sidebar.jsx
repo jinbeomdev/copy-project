@@ -74,16 +74,37 @@ function RmMenu(props) {
 			props.setSelectedRmMenu(null);
 			return;
 		}
-		props.setSelectedRmMenu(id);
+		props.setSelectedRmMenu({
+			id: id,
+			title: title
+		});
+	}
+
+	const handleOnSave = () => {
+		const reminderApi = new ReminderApi();
+		return reminderApi.modifyReminderMenu('jinbeom', id, title);
+	}
+
+	const checkSelectRmMenu = () => {
+		if (props.selectedRmMenu === null) {
+			return;
+		}
+
+		if (props.selectedRmMenu.id !== id) {
+			return;
+		}
+
+		return 'is-selected';
 	}
 
 	return (
-		<div className={`rm-list-menu-item ${id === props.selectedRmMenu ? 'is-selected' : ''}`}
+		<div className={`rm-list-menu-item ${checkSelectRmMenu()}`}
 			onClick={() => handleOnClick()}>
 			<div className="rm-list-menu-item-content">
 				<Editable
 					value={title}
-					setValue={setTitle}>
+					setValue={setTitle}
+					handleOnSave={handleOnSave}>
 				</Editable>
 			</div>
 		</div>
