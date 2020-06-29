@@ -80,10 +80,20 @@ export default function ReminderList(props) {
 
 function Reminder(props) {
   const [title, setTitle] = useState(props.reminderInfo.title);
-  const [isCompleted, setIsCompleted] = useState(props.reminderInfo.isCompleted);
+  const [isCompleted, setIsCompleted] = useState(props.reminderInfo.completed);
 
   const handleOnClick = () => {
-    setIsCompleted(!isCompleted);
+    console.log('?');
+    const  reminderApi = new ReminderApi();
+    reminderApi.completeReminder('jinbeom', props.reminderMenuId, props.reminderInfo.reminderId, !isCompleted)
+      .then((response) => {
+        response.json()
+          .then((data) => {
+            setIsCompleted(data.completed);
+          })
+      })
+      .catch((err) => {
+      });
   }
 
   const handleOnSave = () => {

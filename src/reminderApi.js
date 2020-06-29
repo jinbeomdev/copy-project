@@ -52,6 +52,13 @@ export default class ReminderApi {
     });
   }
 
+  //localhost:8080/reminder-api/user/jinbeom/menu/1/reminder/2/complete/true
+  completeReminder(userName, reminderMenuId, reminderId, isCompleted) {
+    return fetch(`${this.base}/user/${userName}/menu/${reminderMenuId}/reminder/${reminderId}/complete/${isCompleted}`, {
+      method: 'PUT'
+    });
+  }
+
   //localhost:8080/reminder-api/user/jinbeom/menu/1/reminder/1
   deleteReminder(userName, reminderMenuId, reminderId) {
     return fetch(`${this.base}/user/${userName}/menu/${reminderMenuId }/reminder/${reminderId}`, {
