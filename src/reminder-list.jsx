@@ -4,6 +4,7 @@ import ReminderApi from './reminderApi';
 
 export default function ReminderList(props) {
   const [reminders, setReminders] = useState([]);
+  const [isShowCompletedItems, setIsShowCompletedItems] = useState(false);
 
   useEffect(() => {
     const reminderApi = new ReminderApi();
@@ -35,7 +36,12 @@ export default function ReminderList(props) {
     setReminders(reminders.concat());
   }
 
-  const jsxReminders = reminders.map((reminder) =>
+  const jsxReminders = reminders.filter((reminder) => {
+    if (isShowCompletedItems) {
+      return true;
+    }
+    return !reminder.completed;
+  }).map((reminder) =>
     <Reminder
       key={reminder.reminderId}
       reminderMenuId={props.selectedRmMenu.id}
@@ -47,7 +53,12 @@ export default function ReminderList(props) {
     return (
       <div className="rm-list">
         <div className="rm-list-header">
-          { props.selectedRmMenu.title }
+          <div className="rm-list-header-title">
+            { props.selectedRmMenu.title }
+          </div>
+          <div className="show-completed-items" onClick={() => setIsShowCompletedItems(!isShowCompletedItems)}>
+            {`${isShowCompletedItems ? 'Hide' : 'Show'} Completed Items`}
+          </div>
         </div>
         <div className="rm-list-body">
           <div className="scrollable-area">
@@ -72,7 +83,7 @@ export default function ReminderList(props) {
   return (
     <div className="rm-list-body">
       <div className="rm-list-empty">
-        Select reminder
+        Select Reminder
       </div>
     </div>
   )
@@ -83,13 +94,13 @@ function Reminder(props) {
   const [isCompleted, setIsCompleted] = useState(props.reminderInfo.completed);
 
   const handleOnClick = () => {
-    console.log('?');
     const  reminderApi = new ReminderApi();
     reminderApi.completeReminder('jinbeom', props.reminderMenuId, props.reminderInfo.reminderId, !isCompleted)
       .then((response) => {
         response.json()
           .then((data) => {
             setIsCompleted(data.completed);
+            props.reminderInfo.completed = data.completed; //for re-rendering parent
           })
       })
       .catch((err) => {
